@@ -14,8 +14,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-east-1
+          
       # sam build 
-      - run: sam build --use-container
-
+      - name: Build
+        run: sam build --use-container
+        working-directory: aws-usage-report
+        
       # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name quincycheng-usage-report --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-4ditnx1rxk7i --capabilities CAPABILITY_IAM --region ap-east-1
+      - name: Deploy
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name quincycheng-usage-report --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-4ditnx1rxk7i --capabilities CAPABILITY_IAM --region ap-east-1
+        working-directory: aws-usage-report
