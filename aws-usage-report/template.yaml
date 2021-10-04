@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  aws-usage-report
+
+  Sample SAM Template for aws-usage-report
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  UsageReportFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: usage_report/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      MemorySize: 1024
+      Architectures:
+        - x86_64
+      Events:
+        UsageReport:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /
+            Method: get
+      Policies:
+      - AmazonEC2ReadOnlyAccess
+      - AmazonRDSReadOnlyAccess
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  UsageReportApi:
+    Description: "API Gateway endpoint URL for Prod stage for Usage Report function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  UsageReportFunction:
+    Description: "Usage Report Lambda Function ARN"
+    Value: !GetAtt UsageReportFunction.Arn
+  UsageReportFunctionIamRole:
+    Description: "Implicit IAM Role created for Usage Report function"
+    Value: !GetAtt UsageReportFunctionRole.Arn
